@@ -1,0 +1,46 @@
+<tr>
+  <td>
+    <div class="d-flex align-items-center gap-3">
+      <img
+        src="{{ player.photo.url }}"
+        alt="{{ player.name }}"
+        class="rounded-circle"
+        style="width: 56px; height: 56px; object-fit: cover"
+      />
+      <div>
+        <div class="fw-semibold">{{ player.name }}</div>
+        <div class="text-muted small">Ref: {{ player.registration_code }}</div>
+      </div>
+    </div>
+  </td>
+  <td>
+    <div class="d-flex flex-column">
+      <span class="badge text-bg-primary-subtle text-primary-emphasis mb-1">{{ player.get_gender_display }}</span>
+      <span class="badge text-bg-info-subtle text-info-emphasis">{{ player.age_category }} · {{ player.current_age }} yrs</span>
+    </div>
+  </td>
+  <td>
+    {% if player.tournament %}
+    <div class="fw-semibold">{{ player.tournament.name }}</div>
+    <div class="text-muted small">{{ player.tournament.get_gender_category_display }} · {{ player.tournament.get_age_bracket_display }}</div>
+    {% else %}
+    <span class="badge text-bg-warning-subtle text-warning-emphasis">Tournament TBD</span>
+    {% endif %}
+  </td>
+  <td>
+    {% if player.team %}
+    <div class="fw-semibold">{{ player.team.name }}</div>
+    <div class="text-muted small">Mentor: {{ player.team.mentor }}</div>
+    {% else %}
+    <span class="badge text-bg-secondary-subtle text-secondary-emphasis">Unassigned</span>
+    {% endif %}
+  </td>
+  <td class="text-end">
+    <button
+      class="btn btn-sm btn-outline-primary"
+      data-assignment-form="{% url 'tournaments:assign_player_team' player.id %}"
+    >
+      {% if player.team %}Update Team{% else %}Assign Team{% endif %}
+    </button>
+  </td>
+</tr>

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Manage Teams{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 fw-bold">Teams</h1>
+    <p class="text-muted mb-0">Create teams, assign mentors, and upload team logos.</p>
+  </div>
+  <a class="btn btn-secondary" href="{% url 'tournaments:dashboard' %}">Back to Dashboard</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card p-4 h-100">
+      <h2 class="h5 fw-bold mb-3">Create Team</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Tournament</label>
+          {{ form.tournament }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Team Name</label>
+          {{ form.name }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mentor</label>
+          {{ form.mentor }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Team Logo</label>
+          {{ form.logo }}
+          <div class="form-text">Upload a square image for best results. Defaults to a placeholder.</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Notes</label>
+          {{ form.notes }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save Team</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="row g-4">
+      {% for team in teams %}
+      <div class="col-md-6">
+        <div class="card team-card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img
+                src="{{ team.logo.url }}"
+                alt="{{ team.name }}"
+                class="rounded-circle shadow-sm"
+                style="width: 60px; height: 60px; object-fit: cover"
+              />
+              <div>
+                <h3 class="h5 fw-bold mb-0">{{ team.name }}</h3>
+                <p class="text-muted small mb-0">{{ team.tournament.name }}</p>
+              </div>
+            </div>
+            <p class="text-muted small mb-3">Mentor: {{ team.mentor }}</p>
+            <p class="mb-3">{{ team.notes|default:'No notes yet.' }}</p>
+            <div class="d-flex flex-wrap gap-2">
+              {% for player in team.players.all %}
+              <span class="badge text-bg-primary-subtle text-primary-emphasis">
+                {{ player.name }}
+              </span>
+              {% empty %}
+              <span class="text-muted small">No players assigned yet.</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info mb-0">Create teams to begin assigning players.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Manage Tournaments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 fw-bold">Tournaments</h1>
+    <p class="text-muted mb-0">Create and track tournaments. Open registrations appear on player forms.</p>
+  </div>
+  <a class="btn btn-secondary" href="{% url 'tournaments:dashboard' %}">Back to Dashboard</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card p-4 h-100">
+      <h2 class="h5 fw-bold mb-3">Create Tournament</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Tournament Name</label>
+          {{ form.name }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          {{ form.description }}
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Start Date</label>
+            {{ form.start_date }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">End Date</label>
+            {{ form.end_date }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Gender Category</label>
+            {{ form.gender_category }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Age Bracket</label>
+            {{ form.age_bracket }}
+          </div>
+        </div>
+        <div class="form-check form-switch mb-4">
+          {{ form.registration_open }}
+          <label class="form-check-label" for="{{ form.registration_open.id_for_label }}">Registration Open</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save Tournament</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <h2 class="h5 fw-bold mb-3">Existing Tournaments</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Schedule</th>
+              <th>Division</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tournament in tournaments %}
+            <tr>
+              <td>
+                <div class="fw-semibold">{{ tournament.name }}</div>
+                <div class="text-muted small">{{ tournament.description|default:'No description' }}</div>
+              </td>
+              <td>
+                {% if tournament.start_date %}
+                <div>{{ tournament.start_date|date:'M j' }} → {{ tournament.end_date|date:'M j, Y' }}</div>
+                {% else %}
+                <span class="text-muted small">Dates TBC</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge text-bg-primary-subtle text-primary-emphasis">
+                  {{ tournament.get_gender_category_display }}
+                </span>
+                <span class="badge text-bg-info-subtle text-info-emphasis">
+                  {{ tournament.get_age_bracket_display }}
+                </span>
+              </td>
+              <td>
+                {% if tournament.registration_open %}
+                <span class="badge text-bg-success-subtle text-success-emphasis">Open</span>
+                {% else %}
+                <span class="badge text-bg-secondary-subtle text-secondary-emphasis">Closed</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-4">No tournaments yet. Create the first one.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

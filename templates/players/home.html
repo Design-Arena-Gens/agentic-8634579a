@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Netball Player Registration{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+  <div class="col-lg-6">
+    <div class="hero text-white px-4 py-5">
+      <h1 class="display-5 fw-bold mb-4">Join the Netball Action</h1>
+      <p class="lead mb-4">
+        Register now to participate in community, school, and national-level tournaments. Stay organised with a unique
+        reference number and receive updates from your mentors.
+      </p>
+      <div class="d-flex gap-3">
+        <div>
+          <h2 class="display-6 fw-bold">4K+</h2>
+          <p class="mb-0">Players registered</p>
+        </div>
+        <div>
+          <h2 class="display-6 fw-bold">18</h2>
+          <p class="mb-0">Active tournaments</p>
+        </div>
+        <div>
+          <h2 class="display-6 fw-bold">75</h2>
+          <p class="mb-0">Certified mentors</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mt-4 mt-lg-0">
+    <div class="card p-4">
+      <h2 class="h4 fw-bold mb-3">Player Registration</h2>
+      <p class="text-muted mb-4">
+        Complete the form below to secure your spot in the upcoming netball tournaments. You will receive a four-digit
+        reference number after submitting the form.
+      </p>
+      <form method="post" enctype="multipart/form-data" novalidate class="row g-3">
+        {% csrf_token %}
+        {% if form.errors %}
+        <div class="col-12">
+          <div class="alert alert-danger mb-0">
+            Please correct the highlighted fields and try again.
+          </div>
+        </div>
+        {% endif %}
+        <div class="col-12">
+          <label class="form-label">Full Name</label>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth</label>
+          {{ form.date_of_birth }}
+          {{ form.date_of_birth.errors }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Gender</label>
+          {{ form.gender }}
+          {{ form.gender.errors }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Playing Position</label>
+          {{ form.playing_position }}
+          {{ form.playing_position.errors }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Institution / Village</label>
+          {{ form.institution_name }}
+          {{ form.institution_name.errors }}
+        </div>
+        <div class="col-12">
+          <label class="form-label">Tournament Preference</label>
+          {{ form.tournament }}
+          {% if not form.fields.tournament.queryset %}
+          <div class="alert alert-info mt-2 mb-0">
+            No tournaments are open for registration right now. You can still submit your details and an administrator
+            will assign a tournament later.
+          </div>
+          {% endif %}
+          {{ form.tournament.errors }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Profile Photo</label>
+          {{ form.photo }}
+          <div class="form-text">If no photo is uploaded, a default placeholder will be used.</div>
+          {{ form.photo.errors }}
+        </div>
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.consent_to_play }}
+            <label class="form-check-label" for="{{ form.consent_to_play.id_for_label }}">
+              I confirm that I am available and willing to participate in the selected tournament.
+            </label>
+            {{ form.consent_to_play.errors }}
+          </div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary btn-lg w-100" type="submit">Complete Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-4">
+    <div class="card p-4 player-card">
+      <h3 class="h5 fw-bold">Track Your Status</h3>
+      <p class="text-muted">
+        Use your four-digit reference number anytime to confirm your registration details and assigned team.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 player-card">
+      <h3 class="h5 fw-bold">Certified Mentors</h3>
+      <p class="text-muted">
+        Each team features qualified mentors to guide players across junior and senior age brackets.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 player-card">
+      <h3 class="h5 fw-bold">Responsive Support</h3>
+      <p class="text-muted">
+        Our tournament administrators ensure prompt scheduling, communication, and reporting for every division.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

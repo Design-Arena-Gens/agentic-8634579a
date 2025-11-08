@@ -1,0 +1,49 @@
+{% if player %}
+<div class="card p-4">
+  <div class="row align-items-center">
+    <div class="col-md-4 text-center mb-3 mb-md-0">
+      <img
+        src="{{ player.photo.url }}"
+        alt="{{ player.name }}"
+        class="rounded-4 shadow"
+        style="width: 220px; height: 220px; object-fit: cover"
+      />
+    </div>
+    <div class="col-md-8">
+      <h3 class="h4 fw-bold mb-3">{{ player.name }}</h3>
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge bg-primary-subtle text-primary-emphasis px-3 py-2">
+          Ref: {{ player.registration_code }}
+        </span>
+        <span class="badge bg-info-subtle text-info-emphasis px-3 py-2">
+          {{ player.get_gender_display }}
+        </span>
+        <span class="badge bg-success-subtle text-success-emphasis px-3 py-2">
+          {{ player.get_playing_position_display }}
+        </span>
+      </div>
+      <ul class="list-unstyled mb-3">
+        <li><strong>Date of Birth:</strong> {{ player.date_of_birth|date:'F j, Y' }}</li>
+        <li><strong>Institution:</strong> {{ player.institution_name }}</li>
+        <li>
+          <strong>Tournament:</strong>
+          {% if player.tournament %} {{ player.tournament.name }} {% else %} Pending selection {% endif %}
+        </li>
+        <li>
+          <strong>Team:</strong>
+          {% if player.team %} {{ player.team.name }} {% else %} Awaiting assignment {% endif %}
+        </li>
+      </ul>
+      <p class="text-muted mb-0">
+        Keep this information ready when contacting administrators or attending tournaments. Good luck!
+      </p>
+    </div>
+  </div>
+</div>
+{% elif query %}
+<div class="alert alert-warning mb-0">No player found for reference number {{ query }}. Please verify and try again.</div>
+{% else %}
+<div class="text-center text-muted">
+  <p class="mb-0">Results will appear here after you enter a reference number.</p>
+</div>
+{% endif %}

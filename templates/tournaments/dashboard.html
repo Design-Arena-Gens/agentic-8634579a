@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 fw-bold">Tournament Admin Dashboard</h1>
+    <p class="text-muted mb-0">Monitor registrations, filter by category, and assign players to teams.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-primary" href="{% url 'tournaments:tournament_list' %}">Manage Tournaments</a>
+    <a class="btn btn-primary" href="{% url 'tournaments:team_list' %}">Manage Teams</a>
+  </div>
+</div>
+
+<div class="card p-4 mb-4">
+  <div class="row g-3 align-items-center">
+    <div class="col-lg-4">
+      <h2 class="h5 fw-bold mb-0">Age Categories</h2>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        {% for value, label in [('all','All'), ('under14','Under 14'), ('under16','Under 16'), ('under17','Under 17'), ('under19','Under 19'), ('open','Open')] %}
+        <button
+          class="btn filter-chip {% if value == 'all' %}active{% endif %}"
+          data-filter-group="age"
+          data-filter-value="{{ value }}"
+          hx-get="{% url 'tournaments:player_table' %}"
+          hx-target="#player-table-body"
+          hx-include="[name='age_filter'], [name='gender_filter'], [name='tournament_filter']"
+        >
+          {{ label }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <h2 class="h5 fw-bold mb-0">Gender Divisions</h2>
+      <div class="d-flex flex-wrap gap-2 mt-2">
+        {% for value, label in [('all','All'), ('girl','Girls'), ('boy','Boys'), ('woman','Women'), ('man','Men'), ('other','Other')] %}
+        <button
+          class="btn filter-chip {% if value == 'all' %}active{% endif %}"
+          data-filter-group="gender"
+          data-filter-value="{{ value }}"
+          hx-get="{% url 'tournaments:player_table' %}"
+          hx-target="#player-table-body"
+          hx-include="[name='age_filter'], [name='gender_filter'], [name='tournament_filter']"
+        >
+          {{ label }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <h2 class="h5 fw-bold mb-0">Tournament</h2>
+      <select
+        class="form-select"
+        name="tournament_filter"
+        hx-get="{% url 'tournaments:player_table' %}"
+        hx-target="#player-table-body"
+        hx-include="[name='age_filter'], [name='gender_filter'], [name='tournament_filter']"
+      >
+        <option value="">All tournaments</option>
+        {% for tournament in tournaments %}
+        <option value="{{ tournament.id }}">{{ tournament.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <input type="hidden" name="age_filter" value="all" />
+  <input type="hidden" name="gender_filter" value="all" />
+</div>
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="fw-bold">Registered Players</span>
+    <span class="text-muted small">Assign teams directly from the table below.</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Player</th>
+          <th>Category</th>
+          <th>Tournament</th>
+          <th>Team</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody
+        id="player-table-body"
+        hx-get="{% url 'tournaments:player_table' %}"
+        hx-trigger="load"
+        hx-include="[name='age_filter'], [name='gender_filter'], [name='tournament_filter']"
+      ></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="teamAssignmentModal"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelectorAll('[data-filter-group]').forEach((button) => {
+    button.addEventListener('click', function () {
+      const group = this.dataset.filterGroup;
+      const value = this.dataset.filterValue;
+      document.querySelectorAll(`[data-filter-group='${group}']`).forEach((btn) => btn.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelector(`[name='${group}_filter']`).value = value;
+    });
+  });
+</script>
+{% endblock %}

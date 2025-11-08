@@ -1,0 +1,11 @@
+{% if players %}
+{% for player in players %}
+  {% include 'tournaments/partials/player_row.html' with player=player %}
+{% endfor %}
+{% else %}
+<tr>
+  <td colspan="5" class="text-center py-5 text-muted">
+    No players match the selected filters yet. Encourage registrations to populate this list.
+  </td>
+</tr>
+{% endif %}
